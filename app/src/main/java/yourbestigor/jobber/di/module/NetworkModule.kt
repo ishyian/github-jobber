@@ -1,5 +1,6 @@
 package yourbestigor.jobber.di.module
 
+import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import io.reactivex.schedulers.Schedulers
@@ -8,6 +9,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import yourbestigor.jobber.network.GithubJobsApi
 
+@Module
 object NetworkModule {
 
     @Provides
