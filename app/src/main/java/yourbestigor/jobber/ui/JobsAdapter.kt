@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import yourbestigor.jobber.R
 import yourbestigor.jobber.databinding.JobItemBinding
 import yourbestigor.jobber.model.Job
 
 class JobsAdapter(private val context: Context) : RecyclerView.Adapter<JobsAdapter.JobsViewHolder>() {
-    /**
-     * The list of posts of the adapter
-     */
-    private var posts: List<Job> = listOf()
+
+
+    private var jobs: List<Job> = listOf()
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JobsViewHolder {
@@ -24,34 +25,32 @@ class JobsAdapter(private val context: Context) : RecyclerView.Adapter<JobsAdapt
 
 
     override fun getItemCount(): Int {
-        return posts.size
+        return jobs.size
     }
 
     override fun onBindViewHolder(holder: JobsViewHolder, position: Int) {
-        holder.bind(posts[position])
+        holder.bind(jobs[position])
     }
 
 
-    /**
-     * Updates the list of posts of the adapter
-     * @param posts the new list of posts of the adapter
-     */
-    fun updatePosts(posts: List<Job>) {
-        this.posts = posts
+
+    fun updateJobs(jobs: List<Job>) {
+        this.jobs = jobs
         notifyDataSetChanged()
     }
 
-    /**
-     * The ViewHolder of the adapter
-     * @property binding the DataBinging object for Post item
-     */
+
     class JobsViewHolder(private val binding: JobItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        /**
-         * Binds a post into the view
-         */
+
         fun bind(job: Job) {
             binding.job = job
             binding.executePendingBindings()
+            Glide.with(binding.root)
+                .load(job.companyLogo)
+                .apply(RequestOptions()
+                    .error(R.drawable.ic_github_logo))
+                .into(binding.jobsIcon)
+
         }
     }
 }

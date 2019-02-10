@@ -19,7 +19,6 @@ object NetworkModule {
         return retrofit.create(GithubJobsApi::class.java)
     }
 
-
     @Provides
     @Reusable
     @JvmStatic

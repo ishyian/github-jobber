@@ -5,15 +5,19 @@ import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.arellomobile.mvp.presenter.InjectPresenter
 import yourbestigor.jobber.R
-import yourbestigor.jobber.base.BaseActivity
 import yourbestigor.jobber.databinding.ActivityJobsBinding
 import yourbestigor.jobber.model.Job
+import yourbestigor.jobber.util.androidx.MvpAppCompatActivity
 
-class JobsActivity : BaseActivity<JobsPresenter>(), JobsView {
+class JobsActivity : MvpAppCompatActivity(), JobsView {
 
     private lateinit var binding: ActivityJobsBinding
     private lateinit var adapter: JobsAdapter
+
+    @InjectPresenter
+    lateinit var presenter: JobsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,18 +32,13 @@ class JobsActivity : BaseActivity<JobsPresenter>(), JobsView {
 
     }
 
-
-    override fun instantiatePresenter(): JobsPresenter {
-        return JobsPresenter(this)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         presenter.onViewDestroyed()
     }
 
     override fun updateJobs(jobs: List<Job>) {
-        adapter.updatePosts(jobs)
+        adapter.updateJobs(jobs)
     }
 
     override fun showError(error: String) {
@@ -53,4 +52,6 @@ class JobsActivity : BaseActivity<JobsPresenter>(), JobsView {
     override fun hideLoading() {
         binding.progressVisibility = View.INVISIBLE
     }
+
+
 }

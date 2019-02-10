@@ -1,9 +1,5 @@
 package yourbestigor.jobber.base
 
-import android.content.Context
+import com.arellomobile.mvp.MvpView
 
-interface BaseView {
-
-    fun getContext(): Context
-
-}
+interface BaseView: MvpView

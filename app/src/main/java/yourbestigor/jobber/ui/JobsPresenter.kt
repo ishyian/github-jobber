@@ -1,43 +1,61 @@
 package yourbestigor.jobber.ui
 
+import com.arellomobile.mvp.InjectViewState
+import com.arellomobile.mvp.MvpPresenter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import yourbestigor.jobber.R
-import yourbestigor.jobber.base.BasePresenter
+import yourbestigor.jobber.di.component.DaggerPresenterInjector
+import yourbestigor.jobber.di.component.PresenterInjector
+import yourbestigor.jobber.di.module.ContextModule
+import yourbestigor.jobber.di.module.NetworkModule
 import yourbestigor.jobber.network.GithubJobsApi
 import javax.inject.Inject
 
-class JobsPresenter(jobsView: JobsView): BasePresenter<JobsView>(jobsView) {
+
+@InjectViewState
+class JobsPresenter: MvpPresenter<JobsView>() {
 
     @Inject
     lateinit var jobsApi: GithubJobsApi
 
     private var subscription: Disposable? = null
 
-    override fun onViewCreated() {
+    fun onViewCreated() {
         loadJobs()
     }
 
-    /**
-     * Loads the posts from the API and presents them in the view when retrieved, or showss error if
-     * any.
-     */
     fun loadJobs() {
-        view.showLoading()
+        viewState.showLoading()
         subscription = jobsApi
-            .getPosts("ruby", "new york")
+            .getJobs("ruby", "new york")
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
-            .doOnTerminate { view.hideLoading() }
+            .doOnTerminate { viewState.hideLoading() }
             .subscribe(
-                { jobsList -> view.updateJobs(jobsList) },
-                { view.showError(R.string.unknown_error) }
+                { jobsList -> viewState.updateJobs(jobsList) },
+                { viewState.showError("Unknowm error") }
             )
     }
 
-    override fun onViewDestroyed() {
+    fun onViewDestroyed() {
         subscription?.dispose()
+    }
+
+    private val injector: PresenterInjector = DaggerPresenterInjector
+        .builder()
+        .baseView(viewState)
+        .contextModule(ContextModule)
+        .networkModule(NetworkModule)
+        .build()
+
+    init {
+        inject()
+    }
+
+
+    private fun inject() {
+        injector.inject(this)
     }
 
 }

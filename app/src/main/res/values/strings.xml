@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">GithubJobber</string>
+    <string name="app_name">Github Jobber</string>
     <string name="unknown_error">Unknown Error</string>
 </resources>
