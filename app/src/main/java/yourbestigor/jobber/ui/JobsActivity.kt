@@ -1,6 +1,7 @@
 package yourbestigor.jobber.ui
 
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
@@ -10,6 +11,10 @@ import yourbestigor.jobber.R
 import yourbestigor.jobber.databinding.ActivityJobsBinding
 import yourbestigor.jobber.model.Job
 import yourbestigor.jobber.util.androidx.MvpAppCompatActivity
+
+
+
+
 
 class JobsActivity : MvpAppCompatActivity(), JobsView {
 
@@ -28,7 +33,7 @@ class JobsActivity : MvpAppCompatActivity(), JobsView {
         binding.adapter = adapter
         binding.jobs.layoutManager = LinearLayoutManager(this)
 
-        presenter.onViewCreated()
+        hideLoading()
 
     }
 
@@ -46,6 +51,7 @@ class JobsActivity : MvpAppCompatActivity(), JobsView {
     }
 
     override fun showLoading() {
+        binding.progressBar.bringToFront()
         binding.progressVisibility = View.VISIBLE
     }
 
@@ -53,5 +59,24 @@ class JobsActivity : MvpAppCompatActivity(), JobsView {
         binding.progressVisibility = View.INVISIBLE
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.jobs_menu, menu)
+        val search = menu!!.findItem(R.id.action_search)
+
+        val searchView = search.actionView as androidx.appcompat.widget.SearchView
+        searchView.queryHint = "Search"
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                presenter.loadJobs(query!!)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+
+        return true
+    }
 
 }

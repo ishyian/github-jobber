@@ -21,17 +21,16 @@ class JobsPresenter: MvpPresenter<JobsView>() {
 
     private var subscription: Disposable? = null
 
-    fun onViewCreated() {
-        loadJobs()
-    }
 
-    fun loadJobs() {
+
+    fun loadJobs(query: String) {
         viewState.showLoading()
+
         subscription = jobsApi
-            .getJobs("ruby", "new york")
+            .getJobs(query, "new york")
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
-            .doOnTerminate { viewState.hideLoading() }
+            .doOnTerminate { viewState.hideLoading()}
             .subscribe(
                 { jobsList -> viewState.updateJobs(jobsList) },
                 { viewState.showError("Unknowm error") }
